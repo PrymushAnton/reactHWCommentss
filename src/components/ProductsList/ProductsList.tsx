@@ -11,12 +11,21 @@ const products = [
 ]
 
 export function ProductsList(){
+    // створюємо стан, в якому буде зберігатися масив з продуктами, які будуть відображені на головній сторінці
     const [filteredProducts, setFilteredProducts] = useState(products)
+    // створюємо стан, в якому зберігаємо назву обраної категорії
     const [selectedCategory, setSelectedCategory] = useState('All')
-
+    
+    // створюємо еффект, який змінює товари у масиві filteredProducts в залежності від обраної категорії
+    // якщо стан selectedCategory зміниться, то цей еффект відпрацює.
     useEffect(()=>{
+        // якщо обрана категорія "All" (тобто всі, стоїть за замовчуванням), 
+        // то у стан filteredProducts запишуться всі продукти з нашої "бази даних" (масиву products)
         if(selectedCategory === 'All'){
             setFilteredProducts(products)
+        // Інакше, тобто коли обрана якась інша категорія, а не "All", то ми фільтруємо масив products
+        // за допомоогою функції filter: якщо обрана категорія співпадає з категорією, яку має продукт,
+        // то записуємо цей товар у масив filteredProducts
         } else{
             setFilteredProducts(products.filter( (product)=>{
                 return product.category === selectedCategory
@@ -26,20 +35,22 @@ export function ProductsList(){
     }, [selectedCategory])
 
     return <div className="product-list">
+        {/* Додаємо тег select (це dropdown list, тобто якщо ми натиснемо на нього, то з'явиться нова менюшка з категоріями) */}
+        {/* Цей тег повинен в собі включати теги option, які працюють як один з варіантів, який можна обрати, якщо натиснути на select */}
+        {/* Якщо користувач обере якусь категорію, то спрацює функція, яку ми передали в onChange */}
+        {/* У цій функції ми змінюємо категорію на value (значення) одного з options (опцій)*/}
         <select onChange={(event)=>{
             setSelectedCategory(event.target.value)
         }
         }>
+            {/* Створюємо 4 options, перший з яких - активний по дефолту ("All", тобто товари з усіх категорій) */}
             <option value = 'All'>All</option>
             <option value = 'Floppa'>Floppa</option>
             <option value = 'Chat-Bot'>Chat-Bot</option>
             <option value = 'Cats'>Cats</option>
         </select>
+            {/* Показуємо товари, які знаходяться у масиві filteredProducts */}
             {filteredProducts.map( (product) => {
-                // key - уникальный ключ используется при рендере массивов
-                // нужен для идентифицирования reactом элементов которые отображаются
-                    // <img src="" alt="" />
-                
                 return <Product key = {product.id} name = {product.name} price = {product.price} img = {product.img}></Product>
             }
             )}
